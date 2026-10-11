@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ek Khat, Sirf Tumhare Liye</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#07040a; --purple:#1a0b24; --wine:#4a0f22; --red:#9b2c48; --pink:#f3b6c8; --soft:#fbe6ee;
+  --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --script:'Great Vibes','Brush Script MT',cursive;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--black);color:var(--soft);font-family:var(--serif);overflow:hidden}
+body{-webkit-tap-highlight-color:transparent}
+
+/* ---------- background layers ---------- */
+#bg{position:fixed;inset:0;transition:background 1.6s ease;z-index:0}
+body[data-theme=cover] #bg{background:radial-gradient(ellipse at 50% 38%,#3a1450 0%,#14081d 45%,#050207 100%)}
+body[data-theme=open]  #bg{background:radial-gradient(ellipse at 20% 15%,#4a1a5c 0%,#1a0b24 50%,#07040a 100%)}
+body[data-theme=mid]   #bg{background:radial-gradient(ellipse at 80% 85%,#5a1228 0%,#220a18 50%,#07040a 100%)}
+body[data-theme=fear]  #bg{background:radial-gradient(ellipse at 50% 100%,#3d0c1c 0%,#150812 55%,#050207 100%)}
+body[data-theme=serious]#bg{background:linear-gradient(180deg,#0a0610 0%,#120a1a 60%,#060309 100%)}
+body[data-theme=final] #bg{background:radial-gradient(ellipse at 50% 55%,#4a1230 0%,#1a0818 40%,#030105 100%)}
+#particles{position:fixed;inset:0;z-index:1;pointer-events:none}
+#hearts{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.heart{position:absolute;bottom:-40px;color:var(--pink);opacity:0;animation:rise linear forwards;text-shadow:0 0 12px rgba(243,182,200,.6)}
+@keyframes rise{0%{transform:translateY(0) translateX(0) scale(.7);opacity:0}15%{opacity:.7}100%{transform:translateY(-110vh) translateX(var(--dx)) scale(1.1);opacity:0}}
+#vignette{position:fixed;inset:0;z-index:3;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.65) 100%)}
+
+/* ---------- stage ---------- */
+#stage{position:fixed;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;
+  padding:max(20px,env(safe-area-inset-top)) 18px max(96px,env(safe-area-inset-bottom)) 18px}
+#page{width:100%;max-width:640px;max-height:100%;overflow-y:auto;overflow-x:hidden;padding:8px 4px;
+  opacity:0;transform:translateY(18px);filter:blur(6px);transition:opacity .9s ease,transform .9s ease,filter .9s ease;
+  scrollbar-width:none}
+#page::-webkit-scrollbar{display:none}
+#page.show{opacity:1;transform:none;filter:none}
+.kicker{font-size:.8rem;letter-spacing:.38em;text-transform:uppercase;color:var(--pink);opacity:.75;margin-bottom:14px}
+h1,h2{font-weight:500;line-height:1.15}
+h2{font-size:clamp(1.7rem,6vw,2.4rem);margin-bottom:22px;color:#fff;text-shadow:0 0 22px rgba(243,182,200,.35)}
+p{font-size:clamp(1.12rem,3.9vw,1.32rem);line-height:1.75;margin-bottom:1.05em;color:#f6dde6;
+  opacity:0;transform:translateY(10px);animation:in 1.1s ease forwards;animation-delay:calc(var(--i)*.85s + .5s)}
+@keyframes in{to{opacity:1;transform:none}}
+
+/* each theme has its own personality */
+body[data-theme=cover] #page{text-align:center}
+.cover h1{font-family:var(--script);font-weight:400;font-size:clamp(3.2rem,15vw,6rem);color:#fff;
+  text-shadow:0 0 18px #f3b6c8,0 0 50px #9b2c48;animation:glow 4s ease-in-out infinite alternate}
+@keyframes glow{from{text-shadow:0 0 14px #f3b6c8,0 0 36px #9b2c48}to{text-shadow:0 0 26px #fff,0 0 70px #c23b63}}
+.cover .sub{margin:16px 0 34px;font-style:italic;color:var(--pink);font-size:1.15rem}
+body[data-theme=open] #page{text-align:center}
+body[data-theme=open] h2{font-family:var(--script);font-weight:400;font-size:clamp(2.2rem,9vw,3.2rem)}
+body[data-theme=mid] #page{background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(155,44,72,.08));
+  border:1px solid rgba(243,182,200,.18);border-radius:22px;padding:34px 26px;box-shadow:0 20px 70px rgba(0,0,0,.55),inset 0 0 40px rgba(155,44,72,.1);backdrop-filter:blur(6px)}
+body[data-theme=fear] #page{text-align:center}
+body[data-theme=fear] h2{color:#ffb3c4;text-shadow:0 0 26px #9b2c48}
+body[data-theme=fear] p{font-style:italic}
+body[data-theme=serious] #page{border-left:2px solid rgba(155,44,72,.7);padding:6px 6px 6px 22px;border-radius:0}
+body[data-theme=serious] h2{letter-spacing:.02em;color:#ead3dc;text-shadow:none}
+body[data-theme=serious] p{color:#d8c3cc}
+body[data-theme=final] #page{text-align:center}
+body[data-theme=final] h2{font-family:var(--script);font-weight:400;font-size:clamp(2.4rem,10vw,3.6rem)}
+body[data-theme=final] p{animation-delay:calc(var(--i)*2s + 1s);animation-duration:2.2s}
+.quote{font-style:italic;color:#fff;font-size:clamp(1.2rem,4.2vw,1.45rem);border-top:1px solid rgba(243,182,200,.3);padding-top:22px;margin-top:10px}
+
+.btn{display:inline-block;margin-top:14px;padding:14px 34px;border-radius:40px;border:1px solid rgba(243,182,200,.55);
+  background:linear-gradient(135deg,rgba(155,44,72,.55),rgba(74,15,34,.7));color:#fff;font:500 1.1rem var(--serif);letter-spacing:.08em;
+  cursor:pointer;box-shadow:0 0 28px rgba(194,59,99,.35);transition:transform .25s,box-shadow .25s;opacity:0;animation:in 1s ease forwards;animation-delay:var(--d,1.2s)}
+.btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 0 44px rgba(243,182,200,.55)}
+
+/* ---------- navigation ---------- */
+#nav{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;align-items:center;justify-content:space-between;
+  padding:12px 18px max(14px,env(safe-area-inset-bottom));gap:12px;background:linear-gradient(0deg,rgba(5,2,7,.9),transparent)}
+.nbtn{min-width:96px;padding:11px 20px;border-radius:30px;border:1px solid rgba(243,182,200,.35);background:rgba(20,8,29,.6);
+  color:var(--soft);font:500 1rem var(--serif);letter-spacing:.06em;cursor:pointer;transition:.25s}
+.nbtn:hover{border-color:var(--pink);box-shadow:0 0 18px rgba(243,182,200,.35)}
+.nbtn[disabled]{opacity:.25;pointer-events:none}
+#progress{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden;max-width:220px}
+#bar{height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--pink));box-shadow:0 0 10px var(--pink);transition:width .8s ease}
+body[data-theme=cover] #nav{display:none}
+
+/* ---------- music control ---------- */
+#music{position:fixed;top:max(14px,env(safe-area-inset-top));right:14px;z-index:7;display:flex;align-items:center;gap:8px;
+  padding:7px 10px;border-radius:30px;background:rgba(20,8,29,.65);border:1px solid rgba(243,182,200,.3);backdrop-filter:blur(8px)}
+#music button{width:34px;height:34px;border-radius:50%;border:none;background:rgba(155,44,72,.5);color:#fff;font-size:1rem;cursor:pointer;transition:.2s}
+#music button:hover{background:var(--red);box-shadow:0 0 14px var(--pink)}
+.eq{display:flex;gap:2px;align-items:flex-end;height:16px;margin:0 4px}
+.eq i{width:3px;background:var(--pink);border-radius:2px;height:4px;animation:eq 1s ease-in-out infinite;animation-play-state:paused}
+.eq i:nth-child(2){animation-delay:.2s}.eq i:nth-child(3){animation-delay:.4s}.eq i:nth-child(4){animation-delay:.6s}
+body.playing .eq i{animation-play-state:running}
+@keyframes eq{0%,100%{height:4px}50%{height:16px}}
+#suno{position:fixed;left:50%;top:max(70px,calc(env(safe-area-inset-top) + 56px));transform:translateX(-50%);z-index:8;display:none;
+  padding:11px 26px;border-radius:30px;border:1px solid var(--pink);background:rgba(74,15,34,.85);color:#fff;font:500 1.05rem var(--serif);
+  letter-spacing:.08em;cursor:pointer;box-shadow:0 0 30px rgba(243,182,200,.45);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 50px rgba(243,182,200,.8)}}
+#fade{position:fixed;inset:0;z-index:9;background:#000;opacity:0;pointer-events:none;transition:opacity 1s}
+@media (prefers-reduced-motion:reduce){.heart{display:none}p,.btn{animation-duration:.01s;animation-delay:0s}}
+</style>
+</head>
+<body data-theme="cover">
+
+<div id="bg"></div>
+<canvas id="particles"></canvas>
+<div id="hearts"></div>
+<div id="vignette"></div>
+
+<!-- ONE persistent audio element: it lives outside the pages, so navigating never restarts it -->
+<audio id="bgm" loop preload="auto" autoplay playsinline></audio>
+
+<div id="music" aria-label="Music controls">
+  <div class="eq"><i></i><i></i><i></i><i></i></div>
+  <button id="playBtn" title="Play / Pause">❚❚</button>
+  <button id="muteBtn" title="Mute / Unmute">♪</button>
+</div>
+<button id="suno">Music Suno ♫</button>
+
+<main id="stage"><section id="page"></section></main>
+
+<nav id="nav">
+  <button class="nbtn" id="back">← Peeche</button>
+  <div id="progress"><div id="bar"></div></div>
+  <button class="nbtn" id="next">Aage →</button>
+</nav>
+<div id="fade"></div>
+
+<script>
+/* =====================================================================
+   ★ SONG SETTINGS — the only thing you may need to edit ★
+   Put your song in the same folder as this index.html and write its exact
+   file name first in the list below. The other names are fallbacks that
+   are tried automatically if the first one is not found.
+   ===================================================================== */
+const AUDIO_FILES = [
+  'ishq.mpeg',           // <-- aapka song
+  'ishq.mp3', 'ishq.mpg', 'ishq.m4a', 'ishq.wav', 'ishq.ogg'
+];
+
+/* ---------------------------- pages ---------------------------- */
+const PAGES = [
+ { theme:'cover', cover:true },
+
+ { theme:'open', kicker:'Pehla Khat', title:'Tum Kaun Ho Mere Liye', p:[
+  'Tum mere liye sirf ek khaas insaan nahi ho, balke meri zindagi ka woh hissa ho jis ki ahmiyat main alfaaz mein poori tarah bayan nahi kar sakta.',
+  'Tum mere liye had se zyada important ho. Tumhari khushi mere chehre par muskurahat laati hai, aur tumhari udaasi mujhe andar tak mehsoos hoti hai.',
+  'Shayad main har baar tumhein yeh samjha nahi pata ke tum meri zindagi mein kitni ahmiyat rakhti ho, lekin mere dil mein tumhari jagah bohat khaas hai.',
+  'Main chahta hoon ke tum jab bhi yeh website kholo, tumhein mehsoos ho ke koi hai jo tumhein dil se chahta hai aur tumhari maujoodgi ko apni zindagi mein bohat qeemti samajhta hai.' ]},
+
+ { theme:'open', kicker:'Dil Ki Gehraai', title:'Sirf Ek Din Ki Baat Nahi', p:[
+  'Tumhari ahmiyat mere liye kisi ek din, kisi ek baat ya kisi ek lamhe tak mehdood nahi hai.',
+  'Main tumhare saath sirf achhe waqt ki khushiyan nahi, balke zindagi ke mushkil lamhon mein bhi ek doosre ko samajhne wala rishta chahta hoon.',
+  'Meri khwahish hai ke tum apni zindagi mein kamyab ho, apne khwab poore karo aur jab kabhi thak jao to tumhein yeh ehsaas ho ke tumhari baat sunne ke liye koi maujood hai.',
+  'Tum mere liye bohat zyada khaas ho, aur main chahta hoon ke mere alfaaz se tumhein yeh baat sach mein mehsoos ho.' ]},
+
+ { theme:'mid', kicker:'Sach Baat', title:'Tum Se Meri Wabastagi', p:[
+  'Mujhe tumse mohabbat sirf is liye nahi ke tum khoobsurat ho. Mujhe isliye hai ke tumhare saath khamoshi bhi sukoon lagti hai.',
+  'Din bhar ki thakan ke baad jab tumhara khayal aata hai, to lagta hai ke sab kuch itna bhi mushkil nahi.',
+  'Yeh wabastagi mere liye ek aadat nahi, ek zimmedari hai. Main tumhare jazbaat ki qadar karna chahta hoon, chahe woh meri soch se mukhtalif hi kyun na hon.' ]},
+
+ { theme:'mid', kicker:'Buniyad', title:'Bharosa, Wafa, Sachai', p:[
+  'Mere liye rishta khoobsurat lafzon se nahi, bharose se banta hai. Aur bharosa chhoti chhoti sachaiyon se.',
+  'Main chahta hoon ke hum dono ek doosre se woh baat bhi keh saken jo kehna mushkil ho. Kyunki jo baat dil mein reh jaye, wohi aage chal kar faasla ban jati hai.',
+  'Wafa ka matlab mere liye pabandi nahi, balke yeh hai ke jab hum door hon tab bhi ek doosre ki izzat aur yaqeen salamat rahe.' ]},
+
+ { theme:'mid', kicker:'Tumhare Khwab', title:'Main Tumhare Saath Khara Hoon', p:[
+  'Main woh insaan banna chahta hoon jo tumhari kamyabi se jale nahi, balke us par fakhar kare.',
+  'Tumhari kitaabein, tumhare imtihaan, tumhari raatein jaag kar ki hui mehnat. Main in sab ka gawah banna chahta hoon.',
+  'Agar kabhi tumhein rasta dhundhla lage, to main tumhein koi lecture nahi doonga. Bas tumhare saath baith kar sunoonga.' ]},
+
+ { theme:'mid', kicker:'Ghalat Fehmiyan', title:'Jab Hum Ulajh Jayen', p:[
+  'Hum dono insaan hain, aur kabhi na kabhi hamari baatein ek doosre ko chubhengi.',
+  'Us waqt main chahta hoon ke hum khamoshi ko deewar na banne dein. Ghussa aaye to bhi baat karein, shak aaye to bhi pooch lein.',
+  'Mera maanna hai ke ghalat fehmi ka sab se bara ilaaj ek imandaar guftagu hai, na ke door ho jana.' ]},
+
+ { theme:'fear', kicker:'Mera Darr', title:'Tumhein Khone Ka Khayal', p:[
+  'Tumhein khone ka khayal mere liye aasaan nahi hai. Shayad isi liye kabhi kabhi mere alfaaz aur mere jazbaat meri soch se zyada gehre ho jate hain.',
+  'Main tumhein apni zindagi mein rakhna chahta hoon, lekin main yeh bhi samajhta hoon ke kisi ka saath sirf tab khoobsurat hota hai jab dono dil se us rishte ko chahte hon.',
+  'Main apne darr ko tum par bojh nahi banana chahta. Main chahta hoon ke hum apni feelings ko samjhein aur ek doosre se sach bol sakein.' ]},
+
+ { theme:'serious', kicker:'University Ki Duniya', title:'Un Logon Ke Baare Mein', p:[
+  'University mein naye log aayenge. Teachers, dost, aur woh log jinhein main jaanta bhi nahi. Aur sach yeh hai ke mujhe is baat se darr lagta hai ke kahin koi hamare darmiyan na aa jaye.',
+  'Yeh mera apna khauf aur meri apni be-yaqeeni hai. Yeh tum par koi ilzaam nahi, aur na hi tumhein rokne ka koi irada.',
+  'Main bas yeh chahta hoon ke na tum, na main, kisi teesre ko hamare bharose ko nuqsan pohanchane dein. Wafadari aur sachai dono taraf se honi chahiye.',
+  'Aur agar kabhi aisa kuch ho jo hamare rishte ko mutasir kare, to main chahta hoon ke hum seedhi aur saaf baat karein. Chhupa kar nahi, darr kar nahi.' ]},
+
+ { theme:'serious', kicker:'Mustaqbil', title:'Tumhare Khwabon Ka Humsafar', p:[
+  'Agar tum apne future mein ek aise life partner ka khwab dekhti ho jo PhD kar raha ho ya bohat zyada taleem yafta ho, to main chahta hoon ke tum is baat par shuru se hi imandari se socho.',
+  'Ho sakta hai main abhi tumhari soch ke mutabiq woh insaan na hoon, aur ho sakta hai meri taleem, meri mojooda position ya meri zindagi ka safar tumhari expectations se mukhtalif ho.',
+  'Main tumhein jhoote waade nahi karna chahta. Main sirf itna chahta hoon ke tum apne future ke faislay ko samajh kar karo aur mujhe bhi apni feelings ke bare mein sach batao.',
+  'Main chahta hoon ke agar hum saath rahen, to hum ek doosre ko haqeeqat ke saath qabool karein aur mil kar apne mustaqbil ko behtar banane ki koshish karein.',
+  'Aur main jaanta hoon ke kisi insaan ki qeemat sirf ek degree se tay nahi hoti. Na meri, na kisi aur ki.' ]},
+
+ { theme:'serious', kicker:'Tumhara Haq', title:'Agar Tum Chaho Toh', p:[
+  'Agar kabhi tum mujhse bezar ho jao, meri baaton se tang aa jao, ya tumhein lage ke ab tum is rishte mein khush nahi ho, to tum mujhse khul kar baat kar sakti ho.',
+  'Main tumhein apni feelings bata sakta hoon, lekin tumhein zabardasti apne saath rakhna nahi chahta. Main chahta hoon ke tum mere saath apni marzi se raho, kisi darr, pressure ya majboori ki wajah se nahi.',
+  'Agar tumhein lagta hai ke hum dono ke liye alag hona behtar hai, to tum apna faisla kar sakti ho. Ho sakta hai mujhe bohat dukh ho, lekin main chahta hoon ke tum apne dil ki baat imandari se batao.' ]},
+
+ { theme:'final', kicker:'Aakhri Khat', title:'Bas Itna Yaad Rakhna', final:true, p:[
+  'Tum meri zindagi ka woh hissa ho jise main lafzon mein samet nahi sakta.',
+  'Mujhe tumhein khone ka darr hai, aur is darr ko main chhupana nahi chahta. Lekin main yeh bhi nahi chahta ke yeh darr kabhi tumhari azaadi par bhaari pade.',
+  'Main tumse sachai chahta hoon, wafadari chahta hoon, aur yeh umeed rakhta hoon ke hamara rishta zabardasti nahi, raza-mandi se aage barhe.',
+  'Tum apne faislay khud karne ki poori salahiyat rakhti ho, aur main us salahiyat ki dil se izzat karta hoon.',
+  '<span class="quote">Main tumhein apni zindagi mein sirf is liye nahi chahta ke tum meri ho, balke is liye ke main chahta hoon tum apni marzi se mere saath raho. Agar hum ek doosre ko chunte hain, to main chahta hoon ke hamara rishta mohabbat, izzat aur sachai par qaim ho.</span>' ]}
+];
+
+/* ---------------------------- audio (single persistent element) ---------------------------- */
+const audio = document.getElementById('bgm');
+const sunoBtn = document.getElementById('suno');
+const playBtn = document.getElementById('playBtn');
+const muteBtn = document.getElementById('muteBtn');
+let srcIndex = 0, started = false;
+
+function loadSource(){
+  if(srcIndex >= AUDIO_FILES.length){ console.warn('Song file nahi mili. AUDIO_FILES list mein sahi naam likhein.'); return; }
+  audio.src = AUDIO_FILES[srcIndex];
+  audio.load();
+}
+audio.addEventListener('error', () => { srcIndex++; loadSource(); });
+audio.volume = 0.8;
+loadSource();
+
+let userMuted = false, silent = false;
+function syncUI(){
+  document.body.classList.toggle('playing', !audio.paused);
+  playBtn.textContent = audio.paused ? '▶' : '❚❚';
+  muteBtn.textContent = audio.muted ? '✕' : '♪';
+}
+async function tryPlay(){
+  audio.muted = userMuted;
+  try{ await audio.play(); started = true; silent = false; sunoBtn.style.display='none'; }
+  catch(e){
+    if(!started){
+      // Browser ne awaaz wala autoplay roka: muted autoplay try karo, pehle tap par awaaz on hogi
+      try{ audio.muted = true; await audio.play(); silent = true; }catch(_){}
+      sunoBtn.style.display = 'block';
+    }
+  }
+  syncUI();
+}
+// Pehla tap / click / key: awaaz on karo aur song shuru se chalao
+function unlock(){
+  if(silent){
+    audio.muted = userMuted; audio.currentTime = 0; silent = false; started = true;
+    sunoBtn.style.display = 'none';
+    audio.play().catch(()=>{}); syncUI();
+  } else if(!started && audio.paused){ tryPlay(); }
+}
+window.addEventListener('load', tryPlay);
+audio.addEventListener('canplay', () => { if(!started && !silent) tryPlay(); });
+['pointerdown','click','keydown','touchend'].forEach(ev => window.addEventListener(ev, unlock));
+sunoBtn.addEventListener('click', unlock);
+playBtn.addEventListener('click', e => { e.stopPropagation();
+  if(audio.paused){ silent=false; started=true; audio.muted=userMuted; audio.play().catch(()=>{}); }
+  else audio.pause();
+  syncUI(); });
+muteBtn.addEventListener('click', e => { e.stopPropagation(); userMuted = !userMuted; audio.muted = userMuted; silent=false; syncUI(); });
+audio.addEventListener('play', syncUI); audio.addEventListener('pause', syncUI);
+
+/* ---------------------------- navigation ---------------------------- */
+const page = document.getElementById('page');
+const backB = document.getElementById('back'), nextB = document.getElementById('next'), bar = document.getElementById('bar');
+let cur = 0, busy = false;
+
+function render(i){
+  const d = PAGES[i];
+  document.body.dataset.theme = d.theme;
+  if(d.cover){
+    page.innerHTML = `<div class="cover">
+      <div class="kicker" style="opacity:.8">University Ke Pehle Din Par</div>
+      <h1>Sirf Tumhare Liye</h1>
+      <div class="sub">Ek khat, jo dil se likha gaya hai</div>
+      <button class="btn" id="open" style="--d:1.6s">Khat Kholo ♡</button></div>`;
+    document.getElementById('open').onclick = () => go(1);
+  } else {
+    let html = `<div class="kicker">${d.kicker}</div><h2>${d.title}</h2>`;
+    d.p.forEach((t,k) => html += `<p style="--i:${k}">${t}</p>`);
+    if(d.final) html += `<button class="btn" id="restart" style="--d:${d.p.length*2+3}s">Shuru Se Dobara ♡</button>`;
+    page.innerHTML = html;
+    if(d.final) document.getElementById('restart').onclick = restart;
+  }
+  page.scrollTop = 0;
+  backB.disabled = i <= 1;
+  nextB.style.visibility = (i === PAGES.length-1) ? 'hidden' : 'visible';
+  bar.style.width = (i/(PAGES.length-1)*100) + '%';
+  hearts.rate = d.theme==='final' ? 450 : d.theme==='serious' ? 2600 : d.theme==='mid' ? 1500 : 900;
+  requestAnimationFrame(() => requestAnimationFrame(() => page.classList.add('show')));
+}
+function go(i){
+  if(busy || i<0 || i>=PAGES.length) return;
+  busy = true; page.classList.remove('show');
+  setTimeout(() => { cur = i; render(i); busy = false; }, 700);   // audio element is untouched
+}
+function restart(){
+  const f = document.getElementById('fade'); f.style.opacity = 1;
+  setTimeout(() => { cur = 0; page.classList.remove('show'); render(0); f.style.opacity = 0; }, 1000);
+}
+nextB.onclick = () => go(cur+1);
+backB.onclick = () => go(cur-1);
+window.addEventListener('keydown', e => {
+  if(cur===0) return;
+  if(e.key==='ArrowRight') go(cur+1); if(e.key==='ArrowLeft') go(cur-1);
+});
+let tx=null;
+window.addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true});
+window.addEventListener('touchend', e => {
+  if(tx===null || cur===0) return; const dx = e.changedTouches[0].clientX - tx;
+  if(Math.abs(dx) > 70){ dx<0 ? go(cur+1) : go(cur-1); } tx = null;
+});
+
+/* ---------------------------- floating hearts ---------------------------- */
+const hearts = { rate:900 };
+(function loop(){
+  const h = document.createElement('span'); h.className = 'heart';
+  h.textContent = Math.random()>.3 ? '♥' : '❤';
+  h.style.left = Math.random()*100 + 'vw';
+  h.style.fontSize = (10 + Math.random()*20) + 'px';
+  h.style.setProperty('--dx', (Math.random()*80-40) + 'px');
+  h.style.animationDuration = (9 + Math.random()*8) + 's';
+  document.getElementById('hearts').appendChild(h);
+  setTimeout(() => h.remove(), 18000);
+  setTimeout(loop, hearts.rate * (0.7 + Math.random()*0.6));
+})();
+
+/* ---------------------------- soft particles ---------------------------- */
+(function(){
+  const c = document.getElementById('particles'), x = c.getContext('2d'); let w,h,ps=[];
+  function size(){ w = c.width = innerWidth; h = c.height = innerHeight;
+    ps = Array.from({length: Math.min(70, Math.floor(w*h/16000))}, () => ({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.8+.4,s:Math.random()*.25+.05,a:Math.random()*6.28})); }
+  addEventListener('resize', size); size();
+  (function draw(){
+    x.clearRect(0,0,w,h);
+    ps.forEach(p => { p.y -= p.s; p.a += .015; if(p.y < -5){p.y = h+5; p.x = Math.random()*w;}
+      x.beginPath(); x.arc(p.x + Math.sin(p.a)*12, p.y, p.r, 0, 6.28);
+      x.fillStyle = `rgba(243,182,200,${.25 + Math.sin(p.a)*.2})`; x.shadowBlur = 8; x.shadowColor = '#f3b6c8'; x.fill(); });
+    requestAnimationFrame(draw);
+  })();
+})();
+
+render(0); setTimeout(()=>page.classList.add('show'),50);
+</script>
+</body>
+</html>
